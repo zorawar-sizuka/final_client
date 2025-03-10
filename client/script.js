@@ -1,6 +1,5 @@
 const BACKEND_URL = "https://autobill-server-2.onrender.com";
 const socket = io(BACKEND_URL);
-let InitialCount = -1;
 
 // ✅ **Fetch and Render Products**
 const loadProducts = async () => {
@@ -8,7 +7,9 @@ const loadProducts = async () => {
         let res = await axios.get(`${BACKEND_URL}/products`);
         let products = res.data;
 
-        if (products.length === 0) {
+        console.log("🛒 Products Fetched:", products); // Debugging
+
+        if (!products || products.length === 0) {
             document.getElementById("home").innerHTML = "<h3>No products added yet...</h3>";
             return;
         }
@@ -18,7 +19,7 @@ const loadProducts = async () => {
         document.getElementById("home").innerHTML = products.map(product => `
             <section>
                 <div class="card card-long animated fadeInUp">
-                    <img src="assets/images/${product.id}.jpg" class="album">
+                    <img src="assets/images/${product.id}.jpg" class="album" onerror="this.src='assets/images/default.jpg'">
                     <div class="span1">Product Name</div>
                     <div class="card__product">
                         <span>${product.name}</span>
@@ -33,15 +34,16 @@ const loadProducts = async () => {
                     </div>
                     <div class="span4">Payable</div>
                     <div class="card__amount">
-                        <span>${product.payable}</span>
+                        <span>${product.payable.toFixed(2)}</span>
                     </div>
                 </div>
             </section>
         `).join("");
 
-        document.getElementById("checkout-btn").innerText = `CHECKOUT $${totalPayable}`;
+        document.getElementById("checkout-btn").innerText = `CHECKOUT $${totalPayable.toFixed(2)}`;
     } catch (error) {
-        console.error("❌ Failed to Load Products:", error);
+        console.error("❌ Failed to Load Products:", error.response ? error.response.data : error.message);
+        document.getElementById("home").innerHTML = "<h3>Error loading products. Try again later.</h3>";
     }
 };
 
@@ -59,6 +61,8 @@ const checkout = async () => {
         let res = await axios.post(`${BACKEND_URL}/checkout`);
         let total = res.data.total;
 
+        console.log("✅ Checkout Total:", total);
+
         let qrURL = `https://api.scanova.io/v2/qrcode/text?data=upi%3A%2F%2Fpay%3Fpa%3Dshebinjosejacob2014%40oksbi%26pn%3DTXN965654954321%26tn%3DA%26am%3D${total}%26cu%3DINR`;
 
         let qrRes = await fetch(qrURL);
@@ -74,7 +78,7 @@ const checkout = async () => {
         }, 10000);
     } catch (error) {
         alert("❌ Checkout Failed!");
-        console.error(error);
+        console.error("❌ Checkout Error:", error);
     }
 };
 
@@ -82,13 +86,14 @@ const checkout = async () => {
 const deleteProducts = async () => {
     try {
         await axios.delete(`${BACKEND_URL}/clear`);
+        console.log("🗑️ Products Cleared");
         loadProducts(); // Refresh UI
     } catch (error) {
         console.error("❌ Error Deleting Products:", error);
     }
 };
 
-// ✅ **Auto Refresh Products**
+// ✅ **Auto Refresh Products on Page Load**
 window.onload = () => {
     loadProducts();
 };
