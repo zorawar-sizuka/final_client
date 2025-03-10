@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Automatic Billing</title>
 
-    <link rel="stylesheet" href="asset/css/style.css">
+    <link rel="stylesheet" href="./assets/client.css">
 
-    <script src="asset/scripts/script.js"></script>
+    <script src="./script.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -62,7 +62,7 @@
                 document.getElementById("home").innerHTML = products.map(product => `
                     <section>
                         <div class="card card-long animated fadeInUp">
-                            <img src="asset/img/${product.id}.jpg" class="album">
+                            <img src="./assets/images/${product.id}.jpg" class="album">
                             <div class="span1">Product Name</div>
                             <div class="card__product">
                                 <span>${product.name}</span>
