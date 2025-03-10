@@ -71,4 +71,40 @@ const checkout = async () => {
         await fetch(qrURL)
             .then((data) => data.blob())
             .then((img) => {
-                let image = URL.createObjec
+                let image = URL.createObjectURL(img);
+                $("#home, #final").css("display", "none");
+                $("#qr").css("display", "grid");
+                $("#image").attr("src", image);
+            });
+
+        setTimeout(() => {
+            $("#qr").css("display", "none");
+            $("#success").css("display", "grid");
+        }, 10000);
+
+        // After the checkout, clear the cart and update the UI
+        await axios.post(`${BACKEND_URL}/checkout`);
+        deleteProducts(); // Clear the products from the cart
+    } catch (error) {
+        alert("❌ Checkout Failed!");
+        console.error(error);
+    }
+};
+
+// ✅ Function to delete all products from the cart
+const deleteProducts = async () => {
+    let res = await axios.get(`${BACKEND_URL}/products`);
+    const products = res.data;
+
+    for (let product of products) {
+        await axios.delete(`${BACKEND_URL}/clear`);
+    }
+
+    location.reload();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+// Load products every 1 second instead of every 100ms to optimize performance
+window.onload = () => {
+    setInterval(loadProducts, 1000);
+};
