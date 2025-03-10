@@ -63,8 +63,8 @@
             const product = Object.fromEntries(formData.entries());
 
             try {
-                await axios.post(`${BACKEND_URL}/add-product`, product);
-                socket.emit("product_update"); // Notify all clients
+                await axios.post(`${BACKEND_URL}/update`, product);  // POST data to backend
+                socket.emit("cart-update");  // Notify all connected clients
                 alert("✅ Product Added Successfully!");
                 event.target.reset();
             } catch (error) {

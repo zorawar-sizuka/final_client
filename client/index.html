@@ -64,7 +64,7 @@
                 document.getElementById("home").innerHTML = products.map(product => `
                     <section>
                         <div class="card card-long animated fadeInUp">
-                            <img src="assets/image/${product.id}.jpg" class="album"> 
+                            <img src="assets/images/${product.id}.jpg" class="album"> 
                             <div class="span1">Product Name</div>
                             <div class="card__product">
                                 <span>${product.name}</span>
@@ -124,7 +124,6 @@
 
         // ✅ Initial Load
         loadProducts();
-
     </script>
 </body>
 
